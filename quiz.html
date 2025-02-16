@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Quiz Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e0f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .quiz-container {
+            background: #ffffff;
+            padding: 30px 50px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        #opp {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #00796b;
+            margin-bottom: 20px;
+        }
+        
+        .question {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #004d40;
+            margin-bottom: 20px;
+         }
+        
+        .options {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            text-align: left;
+        }
+        
+        .options input {
+            margin-right: 10px;
+        }
+
+        .options label {
+            font-size: 1em;
+            color: #37474f;
+        }
+        
+        .btn {
+            margin-top: 30px;
+        }
+        
+        .btn button {
+            padding: 10px 25px;
+            margin: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn button:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        #home-icon {
+            height: 40px;  
+            width: 40px;
+            position: absolute;  
+            top: 140px;  
+            left: 859px;  
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 425px) {
+            #home-icon {
+                top: 135px;
+                left: 365px;
+            }
+
+            .quiz-container {
+                width: 90%;
+                padding: 20px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="./index.html" title="home"><img src="./home  icon.webp" id="home-icon" alt="Home Icon"></a>
+    <div class="quiz-container">
+        <h2 id="opp">Select the Correct Answer</h2>
+        <div id="question" class="question">Question will appear here</div>
+        <div class="options">
+            <input type="radio" name="option" id="optionA" value="0">
+            <label for="optionA" id="label0">Option A</label>
+        </div>
+        <div class="options">
+            <input type="radio" name="option" id="optionB" value="1">
+            <label for="optionB" id="label1">Option B</label>
+        </div>
+        <div class="options">
+            <input type="radio" name="option" id="optionC" value="2">
+            <label for="optionC" id="label2">Option C</label>
+        </div>
+        <div class="options">
+            <input type="radio" name="option" id="optionD" value="3">
+            <label for="optionD" id="label3">Option D</label>
+        </div>
+        <div class="btn">
+            <button id="submitBtn">Submit</button>
+            <button id="restart">Restart</button>
+        </div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        let yu = document.getElementById('opp');
+        let homebtn = document.getElementById('home-icon');
+
+        const questions = [
+            { question: "Who is the father of the nation?", choices: ['Nehru', 'Dhoni', 'Rajini', 'Gandhi'], answer: 3 },
+            { question: "What is the capital of France?", choices: ['Berlin', 'Madrid', 'Paris', 'Rome'], answer: 2 },
+            { question: "Which planet is known as the Red Planet?", choices: ['Earth', 'Mars', 'Jupiter', 'Saturn'], answer: 1 },
+            { question: "Who wrote 'Romeo and Juliet'?", choices: ['Charles Dickens', 'William Shakespeare', 'Mark Twain', 'Jane Austen'], answer: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById('question');
+        const labels = [document.getElementById('label0'), document.getElementById('label1'), document.getElementById('label2'), document.getElementById('label3')];
+        const resultElement = document.getElementById('result');
+        const submitBtn = document.getElementById('submitBtn');
+        const restartBtn = document.getElementById('restart');
+
+        function displayQuestion() {
+            const q = questions[currentQuestion];
+            questionElement.textContent = q.question;
+            labels.forEach((label, index) => label.textContent = q.choices[index]);
+            document.getElementsByName('option').forEach(option => option.checked = false);
+        }
+
+        function checkAnswer() {
+            const selected = document.querySelector('input[name="option"]:checked');
+            if (!selected) {
+                alert("Please select an option!");
+                return;
+            }
+            const selectedValue = parseInt(selected.value, 10);
+            const currentQ = questions[currentQuestion];
+            resultElement.textContent = selectedValue === currentQ.answer ? "Correct!" : "Wrong!";
+            resultElement.style.color = selectedValue === currentQ.answer ? "green" : "red";
+            if (selectedValue === currentQ.answer) score++;
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                setTimeout(() => { resultElement.textContent = ""; displayQuestion(); }, 1000);
+            } else {
+                setTimeout(showFinalResult, 1000);
+            }
+        }
+
+        function showFinalResult() {
+            resultElement.textContent = `Quiz completed! Your score is ${score}/${questions.length}.`;
+            resultElement.style.color = "blue";
+            submitBtn.disabled = true;
+            document.querySelectorAll('.options').forEach(option => option.style.display = 'none');
+            questionElement.style.display = "none";
+            yu.style.display = "none";
+            homebtn.style.display = "none";
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            submitBtn.disabled = false;
+            resultElement.textContent = "";
+            resultElement.style.color = "black"; 
+            questionElement.style.display = "block";
+            questionElement.style.textAlign = "left";
+            yu.style.display = "block"; 
+            homebtn.style.display = "block"; 
+
+            document.querySelectorAll('.options').forEach(option => {
+                option.style.display = 'flex';
+                option.style.alignItems = 'center';
+            });
+
+            displayQuestion();
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !submitBtn.disabled) checkAnswer();
+        });
+
+        submitBtn.addEventListener('click', checkAnswer);
+        restartBtn.addEventListener('click', restartQuiz);
+        displayQuestion();
+    </script>
+</body>
+</html>

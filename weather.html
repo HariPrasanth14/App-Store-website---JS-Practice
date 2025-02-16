@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+         .weather-container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+         .weather-container h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+         #inputField {
+            width: 80%;
+            padding: 10px 15px;
+            border: 2px solid #4facfe;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        #inputField:focus {
+            border-color: #00f2fe;
+        }
+
+         #searchBtn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background-color: #4facfe;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #searchBtn:hover {
+            background-color: #00f2fe;
+            transform: translateY(-2px);
+        }
+
+        #searchBtn:active {
+            transform: translateY(0);
+        }
+
+         #loader {
+            display: none;
+            margin-top: 15px;
+            font-size: 16px;
+            color: #555;
+        }
+
+         #weatherResults {
+            margin-top: 20px;
+        }
+
+        #weatherResults div {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+         .error {
+            color: red;
+            font-weight: bold;
+        }
+
+         @media (max-width: 480px) {
+            .weather-container {
+                padding: 20px;
+            }
+
+            #inputField {
+                width: 100%;
+            }
+
+            #searchBtn {
+                width: 100%;
+            }
+        }
+        #opp{
+            height: 30px;
+            width: 30px;
+            position: absolute;
+            margin-top: -110px;
+            margin-left: 360px;
+        }
+    </style>
+</head>
+<body>
+    <a href="./index.html" title="home" ><img id="opp" src="./home  icon.webp" id="home-icon" alt=""></a>
+
+    <div class="weather-container">
+        <h1>Weather</h1>
+        <input type="text" placeholder="Enter area name" id="inputField">
+        <br>
+        <button id="searchBtn">Search</button>
+        <div id="loader">Loading...</div>
+        <div id="weatherResults">
+            <!-- <img title="rop" src="" id="photo" height="100px" width="100px" alt=""> -->
+            <div id="temperature"></div>
+            <div id="clouds"></div>
+            <div id="wind"></div>
+            <div id="weather"></div>
+        </div>
+    </div>
+
+    <script>
+        const temperature = document.getElementById('temperature');
+        const wind = document.getElementById('wind');
+        const clouds = document.getElementById('clouds');
+        const weather = document.getElementById('weather');
+        const searchBtn = document.getElementById('searchBtn');
+        const inputField = document.getElementById('inputField');
+        const loader = document.getElementById('loader');
+        // const photo = document.getElementById('photo');
+        const apiKey = '2c04be321b943f47a14f540548c015f4';  
+
+        // photo.style.display = 'none';
+
+        async function searchWeather() {
+            const cityName = inputField.value.trim();
+
+            temperature.innerHTML = '';
+            wind.innerHTML = '';
+            clouds.innerHTML = '';
+            weather.innerHTML = '';
+            temperature.classList.remove('error');
+ 
+            if (cityName === '') {
+                temperature.innerText = 'Please enter a city name.';
+                return;
+            }
+
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&APPID=${apiKey}&units=metric`;
+
+            try {
+                loader.style.display = 'block';
+
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('City not found. Please check the name and try again.');
+                    } else {
+                        throw new Error('An error occurred while fetching the data.');
+                    }
+                }
+
+                const file = await response.json();
+
+                temperature.innerText = `Temperature: ${file.main.temp} °C`;
+                wind.innerText = `Wind Speed: ${file.wind.speed} m/s`;
+                clouds.innerText = `Cloudiness: ${file.clouds.all}%`;
+                weather.innerText = `Weather: ${file.weather[0].description}`;
+
+               
+            } catch (err) {
+                console.error('Error:', err);
+                temperature.innerHTML = `<span class="error">${err.message}</span>`;
+                wind.innerText = '';
+                clouds.innerText = '';
+                weather.innerText = '';
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        searchBtn.addEventListener('click', searchWeather);
+
+        inputField.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                searchWeather();
+            }
+        });
+    </script>
+</body>
+</html>

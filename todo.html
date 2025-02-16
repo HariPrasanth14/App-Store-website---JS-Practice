@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <link 
+        rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer" 
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative To-Do List</title>
+    <style>
+         :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #f0f0f0;
+            --accent-color: #ff5722;
+            --text-color: #333;
+            --background-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            --button-hover-color: #45a049;
+            --remove-hover-color: #e53935;
+            --complete-hover-color: #388E3C;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+         body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            background: var(--background-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+         .todo-list {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+         .todo-list label {
+            display: block;
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+         .todo-list input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        .todo-list input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .todo-list button#addbtn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .todo-list button#addbtn:hover {
+            background-color: var(--button-hover-color);
+            transform: translateY(-2px);
+        }
+         #task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #task-list li {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #task-list li:nth-child(odd) {
+            background-color: #e8f5e9;
+        }
+
+        #task-list li.completed {
+            background-color: #c8e6c9;
+            text-decoration: line-through;
+            color: gray;
+            transform: scale(0.98);
+        }
+
+         #task-list li span.task-text {
+            flex: 1;
+            margin-right: 10px;
+            text-align: left;
+            word-break: break-word;
+            font-size: 16px;
+        }
+
+         #task-list li button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s, transform 0.2s;
+            padding: 5px;
+            margin-left: 5px;
+        }
+
+        #task-list li button:hover {
+            transform: scale(1.2);
+        }
+
+         #task-list li button.completed-btn {
+            color: var(--primary-color);
+        }
+
+        #task-list li button.completed-btn:hover {
+            color: var(--complete-hover-color);
+        }
+
+        #task-list li button.remove-btn {
+            color: var(--accent-color);
+        }
+
+        #task-list li button.remove-btn:hover {
+            color: var(--remove-hover-color);
+        }
+
+         @media (max-width: 500px) {
+            .todo-list {
+                padding: 30px 20px;
+            }
+
+            .todo-list button#addbtn {
+                width: 100%;
+            }
+        }
+        #opp{
+            height: 30px;
+            width: 30px;
+            position: absolute;
+            margin-top: -240px;
+            margin-left: 410px;
+        }
+    </style>
+</head>
+<body>
+    <a title="logo" href="./index.html"><img id="opp" src="./home  icon.webp" alt=""></a>
+    <div class="todo-list">
+        <label for="type-here">TO DO LIST</label><br>
+        <input type="text" placeholder="Type here" id="task"><br>
+        <button id="addbtn">Add Task</button>
+        <div id="movement">
+            <ul id="task-list">
+            </ul> 
+        </div>
+    </div>
+
+    <script>
+
+        
+
+        let defaultTask = ["Breakfast @ 9am", "Lunch @ 1pm", "Dinner @ 9pm"];
+
+        for (let i = 0; i < defaultTask.length; i++) {
+            let rr = document.createElement('li');
+            rr.innerHTML = `<span class="task-text">${defaultTask[i]}</span>`;
+            document.getElementById('task-list').appendChild(rr);
+
+            let removebtn = document.createElement('button');
+            removebtn.innerHTML = `<i class="fa-solid fa-xmark remove-btn"></i>`;
+            
+            let completed = document.createElement('button');
+            completed.innerHTML = `<i class="fa-solid fa-check completed-btn"></i>`;
+
+            rr.appendChild(completed);
+            rr.appendChild(removebtn);
+
+           
+            completed.addEventListener('click',function(){
+                rr.style.backgroundColor = 'green';
+                rr.style.color = 'white';
+                removebtn.disabled=true
+                
+                let taskSpan = rr.querySelector('.task-text');
+    
+            if (!taskSpan.textContent.includes(' - Completed')) {
+                taskSpan.textContent += ' - Completed';
+                }
+
+            })
+            
+                removebtn.addEventListener('click',function(){
+                // taskList.removeChild(listItem);
+                rr.style.textDecoration='line-through';
+                rr.style.textDecoration = 'line-through';
+                rr.style.backgroundColor='red';
+                rr.style.color='white';
+                completed.disabled=true;
+
+            })
+        }
+
+        let taskList = document.getElementById('task-list');
+        let addBtn = document.getElementById('addbtn');
+
+
+        
+       
+
+
+         addBtn.addEventListener('click', function () {
+     
+            let task = document.getElementById('task').value.trim();
+
+            let taskKey = `task_${new Date()}`;
+            // localStorage.setItem(taskKey, task+'False');
+            localStorage.setItem(taskKey,task+'- The task not yet completed');
+
+
+            if (task === "") {
+                alert("Enter Task");
+                return;
+            }
+
+            let listItem = document.createElement('li');
+            listItem.innerHTML = `<span class="task-text">${task}</span>`;
+
+            let removebtn = document.createElement('button');
+            removebtn.innerHTML = `<i class="fa-solid fa-xmark remove-btn"></i>`;
+
+            let completed = document.createElement('button');
+            completed.innerHTML = `<i class="fa-solid fa-check completed-btn"></i>`;
+
+
+
+            completed.addEventListener('click', function () {
+                listItem.style.backgroundColor = 'green';
+                listItem.style.color = 'white';
+
+                let taskSpan = listItem.querySelector('.task-text');
+    
+            if (!taskSpan.textContent.includes(' - Completed')) {
+                taskSpan.textContent += ' - Completed';
+                }
+
+
+                localStorage.setItem(taskKey,task+' true, the task is completed');
+                removebtn.disabled = true;
+            });
+
+            
+            removebtn.addEventListener('click', function () {
+                listItem.style.textDecoration = 'line-through';
+                listItem.style.backgroundColor='yellow';
+                listItem.style.color='black';
+                localStorage.removeItem(taskKey,task+' task is removed')
+                completed.disabled = true;
+
+            });
+
+            listItem.appendChild(completed);
+            listItem.appendChild(removebtn);
+            taskList.appendChild(listItem);
+            
+            document.getElementById('task').value = '';
+
+            
+            
+
+           
+
+
+        });
+    </script>
+</body>
+</html>
